@@ -9,11 +9,9 @@ services:
       - "2222:2222"
     user: "1500:1500"
     read_only: true
-    tmpfs:
-      - "/tmp:rw,noexec,nosuid,size=1M"
     security_opt:
       - no-new-privileges
-    command: ssh-tarpit -a 192.168.123.2 -p 2222 -f /tmp/tarpit.log
+    command: ssh-tarpit -a 192.168.123.2 -p 2222
     networks:
       tp_network:
         ipv4_address: 192.168.123.2
