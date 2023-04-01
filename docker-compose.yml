@@ -1,0 +1,23 @@
+version: '3.5'
+services:
+  tarpit:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      tags:
+        - tarpit_container:1.0
+    hostname: rpil01
+    container_name: tarpit_container
+    ports:
+      - "127.0.0.1:2222:2222"
+    command: ssh-tarpit -a 192.168.123.2 -p 2222
+    networks:
+      tp_network:
+        ipv4_address: 192.168.123.2
+
+networks:
+  tp_network:
+    ipam:
+      config:
+        - subnet: 192.168.123.0/24
+          gateway: 192.168.123.1
