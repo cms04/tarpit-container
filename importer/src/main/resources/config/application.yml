@@ -1,0 +1,18 @@
+logging:
+  level:
+    ROOT: INFO
+
+spring:
+  profiles.active: dev
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    username: batch_importer
+  jpa:
+    database-platform: org.hibernate.dialect.MariaDBDialect
+  batch:
+    jdbc:
+      initialize-schema: never
+      table-prefix: spring_batch.BATCH_
+
+application:
+  chunk-size: 100

@@ -1,0 +1,10 @@
+version: '3.3'
+services:
+  tarpit-importer:
+    image: tarpit-importer:1.0
+    networks:
+      - infrastructure
+
+networks:
+  infrastructure:
+    external: true
