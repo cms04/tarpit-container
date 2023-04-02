@@ -1,4 +1,3 @@
-  GNU nano 5.4                                                                                        logs_to_csv.sh                                                                                                 
 #!/bin/bash
 
 set -e
