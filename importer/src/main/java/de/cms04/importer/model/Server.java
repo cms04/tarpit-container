@@ -10,6 +10,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -22,6 +23,7 @@ import lombok.ToString;
 public class Server extends AuditedEntity {
     
     @Id
+    @NotNull
     @Column(name = "ip", nullable = false, unique = true)
     private String ip;
 

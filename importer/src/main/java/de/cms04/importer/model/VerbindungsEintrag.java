@@ -23,7 +23,6 @@ import lombok.EqualsAndHashCode;
 public class VerbindungsEintrag extends AuditedEntity {
     
     @Id
-    @NotNull
     @Column(name = "id", nullable = false, updatable = false, unique = true)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

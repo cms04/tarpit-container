@@ -4,6 +4,8 @@ import org.springframework.batch.core.Step;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.item.ItemReader;
+import org.springframework.batch.item.ItemWriter;
+import org.springframework.batch.item.database.JpaItemWriter;
 import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.LineMapper;
 import org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper;
@@ -15,15 +17,20 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import de.cms04.importer.config.ApplicationProperties;
+import de.cms04.importer.model.VerbindungsEintrag;
+import jakarta.persistence.EntityManagerFactory;
+import lombok.AllArgsConstructor;
 
 @Configuration
+@AllArgsConstructor
 public class ImportDataStepConfiguration {
     
     @Bean
-    public Step importDataStep(ApplicationProperties applicationProperties, JobRepository jobRepository, PlatformTransactionManager pta, ItemReader<RawData> reader, ImportDataStepWriter writer) {
-        return new StepBuilder("importDataStep", jobRepository)
-            .<RawData, RawData>chunk(applicationProperties.getChunkSize(), pta)
+    public Step importTarpitDataStep(ApplicationProperties applicationProperties, JobRepository jobRepository, PlatformTransactionManager pta, ItemReader<RawData> reader, ImportDataStepProcessor processor, ItemWriter<VerbindungsEintrag> writer) {
+        return new StepBuilder("importTarpitDataStep", jobRepository)
+            .<RawData, VerbindungsEintrag>chunk(applicationProperties.getChunkSize(), pta)
             .reader(reader)
+            .processor(processor)
             .writer(writer)
             .faultTolerant()
             .skipLimit(Integer.MAX_VALUE)
@@ -39,6 +46,13 @@ public class ImportDataStepConfiguration {
         itemReader.setLinesToSkip(1);
         itemReader.setLineMapper(lineMapper());
         return itemReader;
+    }
+
+    @Bean
+    ItemWriter<VerbindungsEintrag> itemWriter(EntityManagerFactory entityManagerFactory) {
+        JpaItemWriter<VerbindungsEintrag> jpaItemWriter = new JpaItemWriter<>();
+        jpaItemWriter.setEntityManagerFactory(entityManagerFactory);
+        return jpaItemWriter;
     }
 
     private LineMapper<RawData> lineMapper() {

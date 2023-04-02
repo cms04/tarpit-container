@@ -12,11 +12,10 @@ import org.springframework.context.annotation.Configuration;
 public class ImporterConfiguration {
     
     @Bean
-    public Job importOwidCovidData(JobRepository jobRepository, Step downloadCsvStep, Step importDataStep, StepExecutionListener listener) {
+    public Job importOwidCovidData(JobRepository jobRepository, Step downloadCsvStep, Step importTarpitDataStep) {
         return new JobBuilder("importTarpitData", jobRepository)
             .incrementer(new RunIdIncrementer())
-            .listener(listener)
-            .flow(importDataStep)
+            .flow(importTarpitDataStep)
             .end()
             .build();
     }
