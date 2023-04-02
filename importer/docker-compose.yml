@@ -2,6 +2,8 @@ version: '3.3'
 services:
   tarpit-importer:
     image: tarpit-importer:1.0
+    volumes:
+      - /tmp/tarpit/:/tmp/tarpit/
     networks:
       - infrastructure
 
