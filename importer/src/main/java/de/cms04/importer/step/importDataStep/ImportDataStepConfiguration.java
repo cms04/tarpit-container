@@ -1,5 +1,8 @@
 package de.cms04.importer.step.importDataStep;
 
+import org.springframework.batch.core.ItemProcessListener;
+import org.springframework.batch.core.ItemReadListener;
+import org.springframework.batch.core.ItemWriteListener;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
@@ -26,7 +29,7 @@ import lombok.AllArgsConstructor;
 public class ImportDataStepConfiguration {
     
     @Bean
-    public Step importTarpitDataStep(ApplicationProperties applicationProperties, JobRepository jobRepository, PlatformTransactionManager pta, ItemReader<RawData> reader, ImportDataStepProcessor processor, ItemWriter<VerbindungsEintrag> writer) {
+    public Step importTarpitDataStep(ApplicationProperties applicationProperties, JobRepository jobRepository, PlatformTransactionManager pta, ItemReader<RawData> reader, ImportDataStepProcessor processor, ItemWriter<VerbindungsEintrag> writer, ImportItemListener listener) {
         return new StepBuilder("importTarpitDataStep", jobRepository)
             .<RawData, VerbindungsEintrag>chunk(applicationProperties.getChunkSize(), pta)
             .reader(reader)
@@ -35,6 +38,9 @@ public class ImportDataStepConfiguration {
             .faultTolerant()
             .skipLimit(Integer.MAX_VALUE)
             .skip(Exception.class)
+            .listener((ItemReadListener<RawData>) listener)
+            .listener((ItemProcessListener<VerbindungsEintrag, RawData>) listener)
+            .listener((ItemWriteListener<VerbindungsEintrag>) listener)
             .build();
     }
 

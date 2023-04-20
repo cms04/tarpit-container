@@ -2,3 +2,4 @@
 **/*.csv
 **/.vscode
 **/user_access.sql
+**/.DS_Store
