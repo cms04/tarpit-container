@@ -7,19 +7,19 @@ if [ $# != "1" ]; then
     exit 1
 fi
 
-PATH=/tmp/tarpit/
+PFAD=/tmp/tarpit/
 FILENAME=$1
 
-mkdir -p $PATH
+mkdir -p $PFAD
 
-echo 'date;time;ip;port;type;iso_code;country' > $PATH$FILENAME
+echo 'date;time;ip;port;type;iso_code;country' > $PFAD$FILENAME
 
-cat tarpit.log | grep -e 'Client' |\
+docker-compose -f ../docker-compose.yml logs | grep -e 'Client' |\
     awk '{print $3,$4,$8,$9,$10}' |\
     sed -E "s/\('//g" | sed -E "s/'\,//g" | sed -E "s/\)//g" |\
     while read s; do
         echo $s $(geoiplookup $(echo $s | awk '{print $3}') | awk '{print $4}{for(i=5;i<=NF;i++)print $i}' | sed -E "s/\,\n/\;/" | tr '\n' '+')
     done |\
-    tr ' ' ';' | tr '+' ' ' | sed -E "s/\, /\;/" >> $PATH$FILENAME
+    tr ' ' ';' | tr '+' ' ' | sed -E "s/\, /\;/" >> $PFAD$FILENAME
 
 exit 0
